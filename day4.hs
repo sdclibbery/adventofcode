@@ -12,14 +12,15 @@ md5 = show . digestToHexByteString . md5core
 tryit :: Integer -> String
 tryit n = md5 $ input ++ show n
 
-startsWithFiveZeros :: String -> Bool
-startsWithFiveZeros s = Data.List.isPrefixOf "\"00000" s
-
-findit :: Integer
-findit = until checkit (+1) 0
+findit :: (String -> Bool) -> Integer
+findit pred = until checkit (+1) 0
 	where
-		checkit n = (n > 1200000) || (startsWithFiveZeros $ tryit n) -- (trace (show n) $ startsWithFiveZeros $ tryit n)
+		checkit n = (n > 100000000) || (pred $ tryit n)
 
-main = putStrLn $ show findit
+startsWithFiveZeros s = Data.List.isPrefixOf "\"00000" s
+startsWithSixZeros s = Data.List.isPrefixOf "\"000000" s
+
+--main = putStrLn $ show $ findit startsWithFiveZeros
+main = putStrLn $ show $ findit startsWithSixZeros
 
 input = "iwrupvqb"
